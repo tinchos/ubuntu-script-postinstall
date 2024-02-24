@@ -1,0 +1,17 @@
+zsh
+ca-certificates
+build-essential
+python3-dev
+libssl-dev
+inotify-tools
+python3-dbus
+apt-transport-https
+curl
+git
+gnupg
+python3-pip
+gnupg-agent
+software-properties-common
+ubuntu-restricted-extras
+lsb-release
+lens-desktop
