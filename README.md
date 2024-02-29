@@ -36,5 +36,5 @@ Podes agregar y quitar los programas que necesites, en los listados estan los qu
 # en caso de ser necesario, dar permiso de ejecucion al archivo
 chmod +x postinstall.sh
 # para ejecutarlo:
-bash postinstall.sh
+sudo bash postinstall.sh
 ```

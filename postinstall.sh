@@ -6,19 +6,6 @@ if [[ -f .env ]]; then
 fi
 
 # Variables
-line=$(Colorgreen '# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #')
-declare -g titulo="Comprobando si esta instalado \$app..."
-declare -g noexiste="\$app no está instalado. Instalando \$app..."
-declare -g instalado="\$app se ha instalado correctamente."
-declare -g existe="\$app Ya esta instalado."
-
-local script_dir="$(dirname "$0")"  # Directorio del script
-
-green='\e[32m'
-blue='\e[34m'
-clr='\e[0m' # secuencia compatible de escape
-red='\033[0;31m'
-
 Colorgreen() {
 	echo -ne $green$1$clr
 }
@@ -32,6 +19,26 @@ Colorred() {
 function go_tmp() {
   cd /tmp
 }
+
+line=$(Colorgreen '# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #')
+declare -g titulo="Comprobando si esta instalado \$app..."
+declare -g noexiste="\$app no está instalado. Instalando \$app..."
+declare -g instalado="\$app se ha instalado correctamente."
+declare -g existe="\$app Ya esta instalado."
+
+green='\e[32m'
+blue='\e[34m'
+clr='\e[0m' # secuencia compatible de escape
+red='\033[0;31m'
+
+# warning
+if [ "$(whoami)" != "root" ]; then
+  echo -e $red"**Advertencia!!!**"$clr
+  echo -e $red"Este script debe ejecutarse con privilegios de administrador (sudo)."$clr
+  echo -e $red"Ejecútelo de nuevo con el comando 'sudo bash postinstall.sh'"$clr
+  sleep 5
+  exit 1
+fi
 
 # Funciones CORE
 function inst_docker() {
@@ -225,6 +232,22 @@ function inst_brave() {
   fi
 }
 
+function inst_lens() {
+  app="Lens Desktop"
+  version=$(lens-desktop --version | awk '{print $2}')
+  echo -e $blue"${titulo//\$app/$app}"$clr
+  go_tmp
+  if [ -n "$(command -v lens-desktop)" ]; then
+    echo -e $green"${existe//\$app/$app $version}"$clr
+  else
+    echo -e $red"${noexiste//\$app/$app}"$clr
+    curl -fsSL https://downloads.k8slens.dev/keys/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/lens-archive-keyring.gpg > /dev/null
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/lens-archive-keyring.gpg] https://downloads.k8slens.dev/apt/debian stable main" | sudo tee /etc/apt/sources.list.d/lens.list > /dev/null
+    sudo apt update && apt install lens -y
+    echo -e $green"${instalado//\$app/$app}"$clr
+  fi
+}
+
 # Funcion Lista APPS
 function inst_coreapps() {
   echo -ne " $line $(Colorgreen '###') $(Colorblue 'Preparando aplicaciones CORE') $(Colorgreen '###') $line "
@@ -360,7 +383,7 @@ $(Colorblue 'Choose an option:') "
         case $a in
                 1) inst_coreapps ; inst_ohmyzsh ; inst_antigen ; os_upgrade ; menu_ubuntu ;;
                 2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_awscli ; inst_argo ;  menu_ubuntu ;;
-                3) inst_apps_v2 ; inst_brave ; inst_snap ; menu_ubuntu ;;
+                3) inst_apps_v2 ; inst_brave ; inst_lens ; inst_snap ; menu_ubuntu ;;
                 4) inst_server ; menu_ubuntu ;;
 #               5)  ; menu_ubuntu ;;
 #               6)  ; menu_ubuntu ;;
