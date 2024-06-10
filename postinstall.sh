@@ -19,17 +19,22 @@ Colorred() {
 function go_tmp() {
   cd /tmp
 }
-
-line=$(Colorgreen '# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #')
+# get window size
+win=$(tput cols)
+# fill calcualtion
+fill_left=$(( ($win - 10) / 2 + (($win - 10) % 2) ))
+fill_right=$(( $win - $fill_left - 10 ))
+line=$(Colorgreen '#####')
 declare -g titulo="Comprobando si esta instalado \$app..."
 declare -g noexiste="\$app no está instalado. Instalando \$app..."
 declare -g instalado="\$app se ha instalado correctamente."
 declare -g existe="\$app Ya esta instalado."
 
+# ANSI color codes
 green='\e[32m'
 blue='\e[34m'
 clr='\e[0m' # secuencia compatible de escape
-red='\033[0;31m'
+red='\e[31m'
 
 # warning
 if [ "$(whoami)" != "root" ]; then
@@ -40,7 +45,7 @@ if [ "$(whoami)" != "root" ]; then
   exit 1
 fi
 
-# Funciones CORE
+# Func apps DEVOPS
 function inst_docker() {
   app="Docker"
   version=$(docker version --format '{{.Server.Version}}')
@@ -190,7 +195,7 @@ function inst_argo() {
     fi
 }
 
-# Funciones APPS
+# Func aditonal APPS
 function inst_ohmyzsh() {
   app="OhMyZSH"
   echo -e $blue"${titulo//\$app/$app}"$clr
@@ -206,7 +211,7 @@ function inst_ohmyzsh() {
 function inst_antigen() {
   app="Antigen"
   echo -e $blue"${titulo//\$app/$app}"$clr
-  FILE_ANTIGEN=~/.oh-my-zsh/antigen.zsh
+  FILE_ANTIGEN=$HOME/.oh-my-zsh/antigen.zsh
   if [ ! -f "$FILE_ANTIGEN" ]; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -L git.io/antigen > $FILE_ANTIGEN
@@ -248,32 +253,17 @@ function inst_lens() {
   fi
 }
 
-# Funcion Lista APPS
+# Func inst APPS
 function inst_coreapps() {
-  echo -ne " $line $(Colorgreen '###') $(Colorblue 'Preparando aplicaciones CORE') $(Colorgreen '###') $line "
-  sleep 3
-  local script_dir="$(dirname "$0")"  # Directorio del script
-  local core_path="$script_dir/apps_source/g-programs_core.src"  # Ruta del archivo "programs.src"
-  programs_core=($(cat "$core_path"))
-  for program in "${programs_core[@]}"
-  do
-    if dpkg -s "$program" &> /dev/null; then
-      echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
-    else
-      sudo apt install -y "$program"
-      echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
-    fi
-  done
-}
-
-function inst_apps_v2() {
-  echo -ne " $line $(Colorgreen '###') $(Colorblue 'Preparando el listado de aplicaciones') $(Colorgreen '###') $line "
+  echo -ne "$(Colorgreen '# # # # ')$(Colorblue 'Preparando el listado de aplicaciones CORE')$(Colorgreen ' # # # #')"
   sleep 3
   local script_dir="$(dirname "$0")"
   
   if [ -n "$(command -v gnome-shell)" ]; then
-    local script_dir="$(dirname "$0")"
-    local file_path="$script_dir/apps_source/g-programs.src"
+    echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
+    sleep 5
+    #local script_dir="$(dirname "$0")"
+    local file_path="$PWD/apps_source/g-programs_core.src"
     echo $file_path
     sleep 10
     programs=($(cat $file_path))
@@ -287,7 +277,52 @@ function inst_apps_v2() {
         fi
     done
   elif [ -n "$(command -v kwin)" ]; then
-    local file_path="$script_dir/app_source/k-programs.src"
+    echo -e "${blue}Entorno de escritorio encontrado ${green}KDE ${clr}"
+    sleep 5
+    local file_path="$PWD/apps_source/k-programs_core.src"
+    echo $file_path
+    sleep 5
+    programs=($(cat "$file_path"))
+    for program in "${programs[@]}"
+    do
+        if dpkg -s "$program" &> /dev/null; then
+            echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
+        else
+            sudo apt install -y "$program"
+            echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
+        fi
+    done
+  else
+      echo "No se pudo detectar un entorno de escritorio compatible."
+  fi
+}
+
+function inst_apps() {
+  echo -ne "$(Colorgreen '# # # # ')$(Colorblue 'Preparando el listado de aplicaciones')$(Colorgreen ' # # # #')"
+  sleep 3
+  
+  if [ -n "$(command -v gnome-shell)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
+    sleep 5
+    local file_path="$PWD/apps_source/g-programs.src"
+    echo $file_path
+    sleep 5
+    programs=($(cat $file_path))
+    for program in "${programs[@]}"
+    do
+        if dpkg -s "$program" &> /dev/null; then
+          echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
+        else
+          sudo apt install -y "$program"
+          echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
+        fi
+    done
+  elif [ -n "$(command -v kwin)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}KDE ${clr}"
+    sleep 5
+    local file_path="$PWD/apps_source/k-programs.src"
+    echo $file_path
+    sleep 5
     programs=($(cat "$file_path"))
     for program in "${programs[@]}"
     do
@@ -306,15 +341,16 @@ function inst_apps_v2() {
 function inst_snap() {
   echo -ne " $line $(Colorgreen '###') $(Colorblue 'Preparando repositorios SNAP') $(Colorgreen '###') $line "
   sleep 3
-  local script_dir="$(dirname "$0")"
-  local snap_path="$script_dir/apps_source/snap.src"
+  local snap_path="$PWD/apps_source/snap.src"
+  echo $file_path
+  sleep 5
   programs=($(cat "$snap_path"))
   for program in "${programs[@]}"
   do
     if dpkg -s "$program" &> /dev/null; then
       echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
     else
-      sudo apt install -y "$program"
+      sudo snap install "$program"
       echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
     fi
   done
@@ -382,8 +418,8 @@ $(Colorblue 'Choose an option:') "
         read a
         case $a in
                 1) inst_coreapps ; inst_ohmyzsh ; inst_antigen ; os_upgrade ; menu_ubuntu ;;
-                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_awscli ; inst_argo ;  menu_ubuntu ;;
-                3) inst_apps_v2 ; inst_brave ; inst_lens ; inst_snap ; menu_ubuntu ;;
+                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_awscli ; inst_argo ; inst_lens ; menu_ubuntu ;;
+                3) inst_apps ; inst_snap ; menu_ubuntu ;;
                 4) inst_server ; menu_ubuntu ;;
 #               5)  ; menu_ubuntu ;;
 #               6)  ; menu_ubuntu ;;

@@ -1,17 +1,22 @@
 zsh
+aptitude
+synaptic
+gdebi
+mawk
 ca-certificates
 build-essential
 python3-dev
+python3-pip
+python3-dbus
 libssl-dev
 inotify-tools
-python3-dbus
 apt-transport-https
 curl
 git
+wget
 gnupg
-python3-pip
 gnupg-agent
 software-properties-common
 ubuntu-restricted-extras
 lsb-release
-lens-desktop
+rar unrar p7zip-full p7zip-rar
