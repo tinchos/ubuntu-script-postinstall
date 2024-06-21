@@ -221,6 +221,21 @@ function inst_antigen() {
   fi
 }
 
+function inst_exa() {
+  app="EXA"
+  echo -e $blue"${titulo//\$app/$app}"$clr
+  FILE_EXA=/usr/local/bin/exa
+  if [ ! -f "$FILE_EXA" ]; then
+    echo -e $red"${noexiste//\$app/$app}"$clr
+    cd /tmp && wget https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip
+    unzip exa-linux-x86_64-v0.10.0.zip
+    pwd && ls -l
+    echo -e $green"${instalado//\$app/$app}"$clr
+  else
+    echo -e $green"${existe//\$app/$app}"$clr
+  fi
+}
+
 function inst_brave() {
   app="Brave Browser"
   version=$(brave-browser --version | awk '{print $2}')
@@ -386,17 +401,19 @@ function os_upgrade() {
 }
 
 function test_func() {
-  app="Minikube"
-  version=$(minikube version --short)
+  app="EXA"
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
-  if ! command -v minikube &> /dev/null; then
-    echo -e "${noexiste//\$app/$app}"
-    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    sudo install minikube-linux-amd64 /usr/local/bin/minikube
-    echo -e "${instalado//\$app/$app}"
+  FILE_EXA=/usr/local/bin/exa
+  if [ ! -f "$FILE_EXA" ]; then
+    echo -e $red"${noexiste//\$app/$app}"$clr
+    cd /tmp && wget https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip
+    unzip exa-linux-x86_64-v0.10.0.zip
+    pwd && ls -l
+    sleep 5
+    rm -f exa-linux-x86_64-v0.10.0.zip
+    echo -e $green"${instalado//\$app/$app}"$clr
   else
-    echo -e $green"${existe//\$app/$app $version}"$clr
+    echo -e $green"${existe//\$app/$app}"$clr
   fi
 }
 
