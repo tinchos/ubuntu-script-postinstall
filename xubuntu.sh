@@ -60,6 +60,8 @@ apps_dev() {
         python3-dev \
         python3-dbus \
         jq \
+# en caso de usar LENS (como ejemplo) sera necesario la libreria "mono-devel"
+	mono-devel \
         fonts-powerline
 }
 
