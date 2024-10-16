@@ -5,6 +5,7 @@ neovim
 wget
 flameshot
 notepadqq
+neofetch
 jq
 htop
 tree
@@ -15,8 +16,10 @@ net-tools
 ffmpeg
 vlc
 ttf-mscorefonts-installer
+fonts-ubuntu
 dnsutils
 keepassxc
 obs-studio
+yaru-theme-icon
 libreoffice
 libreoffice-l10n-es

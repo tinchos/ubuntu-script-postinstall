@@ -1,12 +1,17 @@
+"linux-headers-$(uname -r)"
 zsh
 aptitude
+dpkg
 synaptic
-gdebi
+gdebi-kde
 mawk
+gpg
+apt-transport-https
 ca-certificates
 build-essential
 python3-dev
 python3-pip
+python3-pygments 
 python3-dbus
 libssl-dev
 inotify-tools
@@ -14,9 +19,12 @@ apt-transport-https
 curl
 git
 wget
-gnupg
-gnupg-agent
-software-properties-common
-ubuntu-restricted-extras
 lsb-release
-rar unrar p7zip-full p7zip-rar
+exfat-fuse
+hfsplus
+hfsutils
+ntfs-3g
+rar
+unrar
+p7zip-full
+p7zip-rar

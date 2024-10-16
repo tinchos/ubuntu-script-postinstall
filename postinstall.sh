@@ -35,6 +35,7 @@ green='\e[32m'
 blue='\e[34m'
 clr='\e[0m' # secuencia compatible de escape
 red='\e[31m'
+myHome=/home/mjc
 
 # warning
 if [ "$(whoami)" != "root" ]; then
@@ -50,7 +51,6 @@ function inst_docker() {
   app="Docker"
   version=$(docker version --format '{{.Server.Version}}')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v docker &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -fsSL https://get.docker.com -o get-docker.sh
@@ -66,7 +66,6 @@ function inst_kube() {
   app="Kubectl"
   version=$(kubectl version --client=true | grep -oP '(?<=GitVersion:"v)\d+\.\d+\.\d+')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v kubectl &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -81,7 +80,6 @@ function inst_minikube() {
   app="Minikube"
   version=$(minikube version --short)
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v minikube &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -96,7 +94,6 @@ function inst_terra() {
   app="Terraform"
   version=$(terraform version | grep -oP '(?<=Terraform v)\d+\.\d+\.\d+')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v terraform &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl "https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip" -o terra_1.6.0.zip
@@ -111,12 +108,12 @@ function inst_helm() {
   app="Helm"
   version=$(helm version --short)
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v helm &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
     chmod 700 get_helm.sh
     ./get_helm.sh
+    rm get_helm.sh -y
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
@@ -149,13 +146,13 @@ function inst_kubelogin() {
   app="KubeLogin"
   version=$(kubelogin --version | awk '{print $3}')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v kubelogin &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -LO https://github.com/int128/kubelogin/releases/latest/download/kubelogin_linux_amd64.zip
     unzip kubelogin_linux_amd64.zip
     sudo mv kubelogin /usr/local/bin/kubelogin
     sudo chmod +x /usr/local/bin/kubelogin
+    rm kubelogin_linux_amd64.zip -y
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
@@ -166,7 +163,6 @@ function inst_awscli() {
   app="awscli"
   version=$(aws --version | awk '{print $1}')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v aws &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -182,7 +178,6 @@ function inst_argo() {
   app="ArgoCD"
   version=$(argo version --short)
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v argo &> /dev/null; then
         echo -e $red"${noexiste//\$app/$app}"$clr
         sudo curl -sLO https://github.com/argoproj/argo/releases/latest/download/argo-linux-amd64.gz
@@ -199,7 +194,7 @@ function inst_argo() {
 function inst_ohmyzsh() {
   app="OhMyZSH"
   echo -e $blue"${titulo//\$app/$app}"$clr
-  if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  if [ ! -d "$mjc/.oh-my-zsh" ]; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     echo -e $green"${instalado//\$app/$app}"$clr
@@ -210,26 +205,12 @@ function inst_ohmyzsh() {
 
 function inst_antigen() {
   app="Antigen"
+  userhome="/home/mjc"
   echo -e $blue"${titulo//\$app/$app}"$clr
-  FILE_ANTIGEN=$HOME/.oh-my-zsh/antigen.zsh
+  FILE_ANTIGEN=$userhome/.oh-my-zsh/antigen.zsh
   if [ ! -f "$FILE_ANTIGEN" ]; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -L git.io/antigen > $FILE_ANTIGEN
-    echo -e $green"${instalado//\$app/$app}"$clr
-  else
-    echo -e $green"${existe//\$app/$app}"$clr
-  fi
-}
-
-function inst_exa() {
-  app="EXA"
-  echo -e $blue"${titulo//\$app/$app}"$clr
-  FILE_EXA=/usr/local/bin/exa
-  if [ ! -f "$FILE_EXA" ]; then
-    echo -e $red"${noexiste//\$app/$app}"$clr
-    cd /tmp && wget https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip
-    unzip exa-linux-x86_64-v0.10.0.zip
-    pwd && ls -l
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app}"$clr
@@ -240,7 +221,6 @@ function inst_brave() {
   app="Brave Browser"
   version=$(brave-browser --version | awk '{print $2}')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if [ -n "$(command -v brave-browser)" ]; then
     echo -e $green"${existe//\$app/$app $version}"$clr
   else
@@ -256,7 +236,6 @@ function inst_lens() {
   app="Lens Desktop"
   version=$(lens-desktop --version | awk '{print $2}')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if [ -n "$(command -v lens-desktop)" ]; then
     echo -e $green"${existe//\$app/$app $version}"$clr
   else
@@ -268,16 +247,48 @@ function inst_lens() {
   fi
 }
 
+function inst_code() {
+  app="VSCode"
+  version=$(code --version | head -1)
+  echo -e $blue"${titulo//\$app/$app}"$clr
+  if [ -n "$(command -v code)" ]; then
+    echo -e $green"${existe//\$app/$app $version}"$clr
+  else
+    echo -e $red"${noexiste//\$app/$app}"$clr
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+	sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+	echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+	rm -f packages.microsoft.gpg
+	sudo apt update
+	sudo apt install code
+    echo -e $green"${instalado//\$app/$app}"$clr
+  fi
+}
+
+function inst_flatpak() {
+  app="flatpak"
+  version=$(flatpak --version)
+  echo -e $blue"${titulo//\$app/$app}"$clr
+  if [ -n "$(command -v flatpak)" ]; then
+    echo -e $green"${existe//\$app/$app $version}"$clr
+  else
+    echo -e $red"${noexiste//\$app/$app}"$clr
+    sudo apt install flatpak -y
+	sleep 5
+	flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    echo -e $green"${instalado//\$app/$app}"$clr
+  fi
+}
+
 # Func inst APPS
 function inst_coreapps() {
   echo -ne "$(Colorgreen '# # # # ')$(Colorblue 'Preparando el listado de aplicaciones CORE')$(Colorgreen ' # # # #')"
   sleep 3
-  local script_dir="$(dirname "$0")"
+  #local script_dir="$(dirname "$0")"
   
   if [ -n "$(command -v gnome-shell)" ]; then
     echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
     sleep 5
-    #local script_dir="$(dirname "$0")"
     local file_path="$PWD/apps_source/g-programs_core.src"
     echo $file_path
     sleep 10
@@ -315,11 +326,12 @@ function inst_coreapps() {
 function inst_apps() {
   echo -ne "$(Colorgreen '# # # # ')$(Colorblue 'Preparando el listado de aplicaciones')$(Colorgreen ' # # # #')"
   sleep 3
+  #local script_dir="$(dirname "$0")"
+  echo $PWD
   
   if [ -n "$(command -v gnome-shell)" ]; then
     echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
     sleep 5
-    local file_path="$PWD/apps_source/g-programs.src"
     echo $file_path
     sleep 5
     programs=($(cat $file_path))
@@ -408,8 +420,6 @@ function test_func() {
     echo -e $red"${noexiste//\$app/$app}"$clr
     cd /tmp && wget https://github.com/ogham/exa/releases/download/v0.10.0/exa-linux-x86_64-v0.10.0.zip
     unzip exa-linux-x86_64-v0.10.0.zip
-    pwd && ls -l
-    sleep 5
     rm -f exa-linux-x86_64-v0.10.0.zip
     echo -e $green"${instalado//\$app/$app}"$clr
   else
@@ -435,8 +445,8 @@ $(Colorblue 'Choose an option:') "
         read a
         case $a in
                 1) inst_coreapps ; inst_ohmyzsh ; inst_antigen ; os_upgrade ; menu_ubuntu ;;
-                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_awscli ; inst_argo ; inst_lens ; menu_ubuntu ;;
-                3) inst_apps ; inst_snap ; menu_ubuntu ;;
+                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_awscli ; inst_argo ; inst_lens ; inst_code ; menu_ubuntu ;;
+                3) inst_apps ; inst_flatpak ; menu_ubuntu ;;
                 4) inst_server ; menu_ubuntu ;;
 #               5)  ; menu_ubuntu ;;
 #               6)  ; menu_ubuntu ;;
