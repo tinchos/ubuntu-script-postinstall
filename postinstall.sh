@@ -136,23 +136,8 @@ function inst_azure() {
     sudo tee /etc/apt/sources.list.d/azure-cli.list
     sudo apt-get update
     sudo apt-get install azure-cli
-    echo -e $green"${instalado//\$app/$app}"$clr
-  else
-    echo -e $green"${existe//\$app/$app $version}"$clr
-  fi
-}
-
-function inst_kubelogin() {
-  app="KubeLogin"
-  version=$(kubelogin --version | awk '{print $3}')
-  echo -e $blue"${titulo//\$app/$app}"$clr
-  if ! command -v kubelogin &> /dev/null; then
-    echo -e $red"${noexiste//\$app/$app}"$clr
-    curl -LO https://github.com/int128/kubelogin/releases/latest/download/kubelogin_linux_amd64.zip
-    unzip kubelogin_linux_amd64.zip
-    sudo mv kubelogin /usr/local/bin/kubelogin
-    sudo chmod +x /usr/local/bin/kubelogin
-    rm kubelogin_linux_amd64.zip -y
+	echo -e $blue"instalando kubelogin"$clr
+	az aks install-cli
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
