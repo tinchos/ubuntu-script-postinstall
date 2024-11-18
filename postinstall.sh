@@ -16,9 +16,6 @@ Colorred() {
 	echo -ne $red$1$clr
 }
 
-function go_tmp() {
-  cd /tmp
-}
 # get window size
 win=$(tput cols)
 # fill calcualtion
@@ -54,8 +51,8 @@ function inst_docker() {
   if ! command -v docker &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
-    sudo usermod -aG docker $USER
+    sh get-docker.sh
+    usermod -aG docker $USER
 		echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
@@ -69,7 +66,7 @@ function inst_kube() {
   if ! command -v kubectl &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
@@ -83,7 +80,7 @@ function inst_minikube() {
   if ! command -v minikube &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+    install minikube-linux-amd64 /usr/local/bin/minikube
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
@@ -124,20 +121,18 @@ function inst_azure() {
   app="Azure"
   version=$(az --version --output table | grep "azure-cli" | awk '{print $2}')
   echo -e $blue"${titulo//\$app/$app}"$clr
-  go_tmp
   if ! command -v az &> /dev/null; then
     echo -e $red"${noexiste//\$app/$app}"$clr
-    sudo mkdir -p /etc/apt/keyrings
+    mkdir -p /etc/apt/keyrings
     curl -sLS https://packages.microsoft.com/keys/microsoft.asc |
     gpg --dearmor |
-    sudo tee /etc/apt/keyrings/microsoft.gpg > /dev/null
-    sudo chmod go+r /etc/apt/keyrings/microsoft.gpg
+    tee /etc/apt/keyrings/microsoft.gpg > /dev/null
+    chmod go+r /etc/apt/keyrings/microsoft.gpg
     echo "deb [arch=`dpkg --print-architecture` signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ jammy main" |
-    sudo tee /etc/apt/sources.list.d/azure-cli.list
-    sudo apt-get update
-    sudo apt-get install azure-cli
-	echo -e $blue"instalando kubelogin"$clr
-	az aks install-cli
+    tee /etc/apt/sources.list.d/azure-cli.list
+    apt update && apt install -f azure-cli
+	  echo -e $blue"instalando kubelogin"$clr
+	  az aks install-cli
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
@@ -165,10 +160,10 @@ function inst_argo() {
   echo -e $blue"${titulo//\$app/$app}"$clr
   if ! command -v argo &> /dev/null; then
         echo -e $red"${noexiste//\$app/$app}"$clr
-        sudo curl -sLO https://github.com/argoproj/argo/releases/latest/download/argo-linux-amd64.gz
-        sudo gunzip -f argo-linux-amd64.gz
-        sudo mv argo-linux-amd64 /usr/local/bin/argo
-        sudo chmod +x /usr/local/bin/argo
+        curl -sLO https://github.com/argoproj/argo/releases/latest/download/argo-linux-amd64.gz
+        gunzip -f argo-linux-amd64.gz
+        mv argo-linux-amd64 /usr/local/bin/argo
+        chmod +x /usr/local/bin/argo
         echo -e $green"${instalado//\$app/$app}"$clr
     else
         echo -e $green"${existe//\$app/$app $version}"$clr
@@ -202,21 +197,6 @@ function inst_antigen() {
   fi
 }
 
-function inst_brave() {
-  app="Brave Browser"
-  version=$(brave-browser --version | awk '{print $2}')
-  echo -e $blue"${titulo//\$app/$app}"$clr
-  if [ -n "$(command -v brave-browser)" ]; then
-    echo -e $green"${existe//\$app/$app $version}"$clr
-  else
-    echo -e $red"${noexiste//\$app/$app}"$clr
-    curl -sS https://brave-browser-apt-release.s3.brave.com/brave-core.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -
-    echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-    sudo apt update && apt install brave-browser -y
-    echo -e $green"${instalado//\$app/$app}"$clr
-  fi
-}
-
 function inst_lens() {
   app="Lens Desktop"
   version=$(lens-desktop --version | awk '{print $2}')
@@ -227,7 +207,7 @@ function inst_lens() {
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -fsSL https://downloads.k8slens.dev/keys/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/lens-archive-keyring.gpg > /dev/null
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/lens-archive-keyring.gpg] https://downloads.k8slens.dev/apt/debian stable main" | sudo tee /etc/apt/sources.list.d/lens.list > /dev/null
-    sudo apt update && apt install lens -y
+    apt update && apt install lens -y
     echo -e $green"${instalado//\$app/$app}"$clr
   fi
 }
@@ -241,11 +221,10 @@ function inst_code() {
   else
     echo -e $red"${noexiste//\$app/$app}"$clr
     wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-	sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-	echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
-	rm -f packages.microsoft.gpg
-	sudo apt update
-	sudo apt install code
+	  install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+	  echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+	  rm -f packages.microsoft.gpg
+	  apt update && apt install code
     echo -e $green"${instalado//\$app/$app}"$clr
   fi
 }
@@ -265,88 +244,74 @@ function inst_flatpak() {
   fi
 }
 
-# Func inst APPS
+## Funcion para la instalacion de programas necesarios ##
 function inst_coreapps() {
   echo -ne "$(Colorgreen '# # # # ')$(Colorblue 'Preparando el listado de aplicaciones CORE')$(Colorgreen ' # # # #')"
   sleep 3
-  #local script_dir="$(dirname "$0")"
-  
-  if [ -n "$(command -v gnome-shell)" ]; then
-    echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
-    sleep 5
-    local file_path="$PWD/apps_source/g-programs_core.src"
-    echo $file_path
-    sleep 10
-    programs=($(cat $file_path))
-    for program in "${programs[@]}"
-    do
-        if dpkg -s "$program" &> /dev/null; then
-          echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
-        else
-          sudo apt install -y "$program"
-          echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
-        fi
-    done
-  elif [ -n "$(command -v kwin)" ]; then
-    echo -e "${blue}Entorno de escritorio encontrado ${green}KDE ${clr}"
-    sleep 5
-    local file_path="$PWD/apps_source/k-programs_core.src"
-    echo $file_path
+
+  install_programs() {
+    local file_path="$1"
+    echo "$file_path"
     sleep 5
     programs=($(cat "$file_path"))
-    for program in "${programs[@]}"
-    do
-        if dpkg -s "$program" &> /dev/null; then
-            echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
-        else
-            sudo apt install -y "$program"
-            echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
-        fi
+    for program in "${programs[@]}"; do
+      if dpkg -s "$program" &> /dev/null; then
+        echo -e "${blue}El programa '$program' ya está instalado ${clr}"
+      else
+        sudo apt install -y "$program"
+        echo -e "${green}'$program' se instaló satisfactoriamente ${clr}"
+      fi
     done
+  }
+
+  if [ -n "$(command -v gnome-shell)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
+    install_programs "$PWD/apps_source/g-programs_core.src"
+  elif [ -n "$(command -v kwin)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}KDE ${clr}"
+    install_programs "$PWD/apps_source/k-programs_core.src"
+  elif [ -n "$(command -v xfwm4)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}XFCE ${clr}"
+    install_programs "$PWD/apps_source/x-programs_core.src"
   else
-      echo "No se pudo detectar un entorno de escritorio compatible."
+    echo "No se pudo detectar un entorno de escritorio compatible."
   fi
 }
 
 function inst_apps() {
   echo -ne "$(Colorgreen '# # # # ')$(Colorblue 'Preparando el listado de aplicaciones')$(Colorgreen ' # # # #')"
   sleep 3
-  #local script_dir="$(dirname "$0")"
   echo $PWD
-  
-  if [ -n "$(command -v gnome-shell)" ]; then
-    echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
-    sleep 5
-    echo $file_path
-    sleep 5
-    programs=($(cat $file_path))
-    for program in "${programs[@]}"
-    do
-        if dpkg -s "$program" &> /dev/null; then
-          echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
-        else
-          sudo apt install -y "$program"
-          echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
-        fi
-    done
-  elif [ -n "$(command -v kwin)" ]; then
-    echo -e "${blue}Entorno de escritorio encontrado ${green}KDE ${clr}"
-    sleep 5
-    local file_path="$PWD/apps_source/k-programs.src"
-    echo $file_path
+
+  install_programs() {
+    local file_path="$1"
+    echo "$file_path"
     sleep 5
     programs=($(cat "$file_path"))
-    for program in "${programs[@]}"
-    do
-        if dpkg -s "$program" &> /dev/null; then
-            echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
-        else
-            sudo apt install -y "$program"
-            echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
-        fi
+    for program in "${programs[@]}"; do
+      if dpkg -s "$program" &> /dev/null; then
+        echo -e "${blue}El programa '$program' ya está instalado ${clr}"
+      else
+        sudo apt install -y "$program"
+        echo -e "${green}'$program' se instaló satisfactoriamente ${clr}"
+      fi
     done
+  }
+
+  if [ -n "$(command -v gnome-shell)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}GNOME ${clr}"
+    local file_path="$PWD/apps_source/g-programs.src"
+    install_programs "$file_path"
+  elif [ -n "$(command -v kwin)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}KDE ${clr}"
+    local file_path="$PWD/apps_source/k-programs.src"
+    install_programs "$file_path"
+  elif [ -n "$(command -v xfwm4)" ]; then
+    echo -e "${blue}Entorno de escritorio encontrado ${green}XFCE ${clr}"
+    local file_path="$PWD/apps_source/x-programs.src"
+    install_programs "$file_path"
   else
-      echo "No se pudo detectar un entorno de escritorio compatible."
+    echo "No se pudo detectar un entorno de escritorio compatible."
   fi
 }
 
@@ -362,7 +327,7 @@ function inst_snap() {
     if dpkg -s "$program" &> /dev/null; then
       echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
     else
-      sudo snap install "$program"
+      snap install "$program"
       echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
     fi
   done
@@ -389,11 +354,11 @@ function inst_server() {
 function os_upgrade() {
   echo -ne "$(Colorgreen '###') $(Colorblue 'Actualizando Ubuntu') $(Colorgreen '###')"
   sleep 3
-  sudo apt -y update && sudo apt install --fix-missing -y && sudo apt -y upgrade
+  apt -y update && apt install --fix-missing -y && apt -y upgrade
 
   echo -ne "$(Colorgreen '###') $(Colorblue 'Limpiando Ubuntu') $(Colorgreen '###')"
   sleep 3
-  sudo apt install -f && sudo apt autoremove -y && sudo apt autoclean && sudo apt clean
+  apt install -f && apt autoremove -y && apt autoclean && apt clean
 
 }
 
@@ -430,8 +395,8 @@ $(Colorblue 'Choose an option:') "
         read a
         case $a in
                 1) inst_coreapps ; inst_ohmyzsh ; inst_antigen ; os_upgrade ; menu_ubuntu ;;
-                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_awscli ; inst_argo ; inst_lens ; inst_code ; menu_ubuntu ;;
-                3) inst_apps ; inst_flatpak ; menu_ubuntu ;;
+                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_argo ; inst_lens ; inst_code ; menu_ubuntu ;;
+                3) inst_apps ; menu_ubuntu ;;
                 4) inst_server ; menu_ubuntu ;;
 #               5)  ; menu_ubuntu ;;
 #               6)  ; menu_ubuntu ;;
