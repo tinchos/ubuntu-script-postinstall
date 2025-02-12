@@ -7,13 +7,13 @@ fi
 
 # Variables
 Colorgreen() {
-	echo -ne $green$1$clr
+  echo -ne $green$1$clr
 }
 Colorblue() {
-	echo -ne $blue$1$clr
+  echo -ne $blue$1$clr
 }
 Colorred() {
-	echo -ne $red$1$clr
+  echo -ne $red$1$clr
 }
 
 # get window size
@@ -45,18 +45,17 @@ fi
 
 # Func apps DEVOPS
 function inst_docker() {
-  app="Docker"
-  version=$(docker version --format '{{.Server.Version}}')
-  echo -e $blue"${titulo//\$app/$app}"$clr
-  if ! command -v docker &> /dev/null; then
-    echo -e $red"${noexiste//\$app/$app}"$clr
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
-    usermod -aG docker $USER
+	app="Docker"
+	version=$(docker version --format '{{.Server.Version}}')
+	echo -e $blue"${titulo//\$app/$app}"$clr
+	if ! command -v docker &> /dev/null; then
+		echo -e $red"${noexiste//\$app/$app}"$clr
+		curl -fsSL https://get.docker.com -o get-docker.sh
+		sh get-docker.sh
 		echo -e $green"${instalado//\$app/$app}"$clr
-  else
-    echo -e $green"${existe//\$app/$app $version}"$clr
-  fi
+	else
+		echo -e $green"${existe//\$app/$app $version}"$clr
+	fi
 }
 
 function inst_kube() { 
@@ -131,8 +130,8 @@ function inst_azure() {
     echo "deb [arch=`dpkg --print-architecture` signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ jammy main" |
     tee /etc/apt/sources.list.d/azure-cli.list
     apt update && apt install -f azure-cli
-	  echo -e $blue"instalando kubelogin"$clr
-	  az aks install-cli
+    echo -e $blue"instalando kubelogin"$clr
+    az aks install-cli
     echo -e $green"${instalado//\$app/$app}"$clr
   else
     echo -e $green"${existe//\$app/$app $version}"$clr
@@ -171,31 +170,17 @@ function inst_argo() {
 }
 
 # Func aditonal APPS
-function inst_ohmyzsh() {
-  app="OhMyZSH"
-  echo -e $blue"${titulo//\$app/$app}"$clr
-  if [ ! -d "$mjc/.oh-my-zsh" ]; then
-    echo -e $red"${noexiste//\$app/$app}"$clr
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    echo -e $green"${instalado//\$app/$app}"$clr
-  else
-    echo -e $green"${existe//\$app/$app}"$clr
-  fi
-}
-
-function inst_antigen() {
-  app="Antigen"
-  userhome="/home/mjc"
-  echo -e $blue"${titulo//\$app/$app}"$clr
-  FILE_ANTIGEN=$userhome/.oh-my-zsh/antigen.zsh
-  if [ ! -f "$FILE_ANTIGEN" ]; then
-    echo -e $red"${noexiste//\$app/$app}"$clr
-    curl -L git.io/antigen > $FILE_ANTIGEN
-    echo -e $green"${instalado//\$app/$app}"$clr
-  else
-    echo -e $green"${existe//\$app/$app}"$clr
-  fi
-}
+#function inst_ohmyzsh() {
+#  app="OhMyZSH"
+#  echo -e $blue"${titulo//\$app/$app}"$clr
+#  if [ ! -d "$mjc/.oh-my-zsh" ]; then
+#    echo -e $red"${noexiste//\$app/$app}"$clr
+#    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+#    echo -e $green"${instalado//\$app/$app}"$clr
+#  else
+#    echo -e $green"${existe//\$app/$app}"$clr
+#  fi
+#}
 
 function inst_lens() {
   app="Lens Desktop"
@@ -206,7 +191,7 @@ function inst_lens() {
   else
     echo -e $red"${noexiste//\$app/$app}"$clr
     curl -fsSL https://downloads.k8slens.dev/keys/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/lens-archive-keyring.gpg > /dev/null
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/lens-archive-keyring.gpg] https://downloads.k8slens.dev/apt/debian stable main" | sudo tee /etc/apt/sources.list.d/lens.list > /dev/null
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/lens-archive-keyring.gpg] https://downloads.k8slens.dev/apt/debian stable main" | tee /etc/apt/sources.list.d/lens.list > /dev/null
     apt update && apt install lens -y
     echo -e $green"${instalado//\$app/$app}"$clr
   fi
@@ -222,7 +207,7 @@ function inst_code() {
     echo -e $red"${noexiste//\$app/$app}"$clr
     wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
 	  install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-	  echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" |sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+	  echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | tee /etc/apt/sources.list.d/vscode.list > /dev/null
 	  rm -f packages.microsoft.gpg
 	  apt update && apt install code
     echo -e $green"${instalado//\$app/$app}"$clr
@@ -315,24 +300,6 @@ function inst_apps() {
   fi
 }
 
-function inst_snap() {
-  echo -ne " $line $(Colorgreen '###') $(Colorblue 'Preparando repositorios SNAP') $(Colorgreen '###') $line "
-  sleep 3
-  local snap_path="$PWD/apps_source/snap.src"
-  echo $file_path
-  sleep 5
-  programs=($(cat "$snap_path"))
-  for program in "${programs[@]}"
-  do
-    if dpkg -s "$program" &> /dev/null; then
-      echo -e "${blue}El programa '$program' ya esta instalado ${clr}"
-    else
-      snap install "$program"
-      echo -e "${green}'$program' Se instalo satisfactoriamente ${clr}"
-    fi
-  done
-}
-
 function inst_server() {
   echo -ne " $line $(Colorgreen '###') $(Colorblue 'Instalando SNAP Apps') $(Colorgreen '##') $line "
   local script_dir="$(dirname "$0")"  # Directorio raiz del script
@@ -394,7 +361,7 @@ $(Colorgreen '0)') Exit
 $(Colorblue 'Choose an option:') "
         read a
         case $a in
-                1) inst_coreapps ; inst_ohmyzsh ; inst_antigen ; os_upgrade ; menu_ubuntu ;;
+                1) inst_coreapps ; os_upgrade ; menu_ubuntu ;;
                 2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_argo ; inst_lens ; inst_code ; menu_ubuntu ;;
                 3) inst_apps ; menu_ubuntu ;;
                 4) inst_server ; menu_ubuntu ;;

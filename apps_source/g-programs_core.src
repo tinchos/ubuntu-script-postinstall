@@ -27,3 +27,5 @@ gnome-weather
 gnome-clocks
 gnome-session
 gnome-tweaks
+dbus-user-session
+uidmap

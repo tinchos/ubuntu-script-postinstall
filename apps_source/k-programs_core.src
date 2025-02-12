@@ -1,9 +1,7 @@
-"linux-headers-$(uname -r)"
 zsh
 aptitude
 dpkg
 synaptic
-gdebi-kde
 mawk
 gpg
 apt-transport-https
@@ -24,7 +22,4 @@ exfat-fuse
 hfsplus
 hfsutils
 ntfs-3g
-rar
-unrar
 p7zip-full
-p7zip-rar
