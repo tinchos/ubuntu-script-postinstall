@@ -1,6 +1,5 @@
 mc
 dialog
-tilix
 obs-studio
 neovim
 flameshot
@@ -17,6 +16,5 @@ vlc
 ttf-mscorefonts-installer
 dnsutils
 mono-devel
-keepassxc
 libfuse2
 eza
