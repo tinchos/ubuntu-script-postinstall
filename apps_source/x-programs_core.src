@@ -17,8 +17,6 @@ python3-pip
 gnupg-agent
 software-properties-common
 lsb-release
-rar
-unrar
 p7zip-full
 p7zip-rar
 dbus-user-session

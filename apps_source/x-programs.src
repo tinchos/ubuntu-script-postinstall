@@ -13,7 +13,6 @@ kubecolor
 net-tools
 ffmpeg
 vlc
-ttf-mscorefonts-installer
 dnsutils
 mono-devel
 libfuse2
