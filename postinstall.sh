@@ -216,6 +216,22 @@ function inst_flatpak() {
   fi
 }
 
+function inst_ghcli() {
+  app="ghcli"
+  version=$(gh --version)
+  echo -e $blue"${titulo//\$app/$app}"$clr
+  if [ -n "$(command -v flatpak)" ]; then
+    echo -e $green"${existe//\$app/$app $version}"$clr
+  else
+    echo -e $red"${noexiste//\$app/$app}"$clr
+    out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg
+    cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+    chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+	  apt update && apt install gh -y
+  fi
+}
+
 ## Funcion para la instalacion de programas necesarios ##
 function inst_coreapps() {
   echo -ne "$(Colorgreen '# # # # ')$(Colorblue 'Preparando el listado de aplicaciones CORE')$(Colorgreen ' # # # #')"
@@ -348,8 +364,8 @@ $(Colorblue 'Choose an option:') "
         read a
         case $a in
                 1) inst_coreapps ; os_upgrade ; menu_ubuntu ;;
-                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_argo ; inst_lens ; inst_code ; menu_ubuntu ;;
-                3) inst_apps ; menu_ubuntu ;;
+                2) inst_docker ; inst_kube ; inst_minikube ; inst_terra ; inst_helm ; inst_azure ; inst_kubelogin ; inst_argo ; inst_lens ; inst_code ; inst_ghcli ; menu_ubuntu ;;
+                3) inst_apps ; inst_flatpak ; menu_ubuntu ;;
                 4) inst_server ; menu_ubuntu ;;
 #               5)  ; menu_ubuntu ;;
 #               6)  ; menu_ubuntu ;;
