@@ -16,7 +16,6 @@ gnupg
 python3-pip
 gnupg-agent
 software-properties-common
-ubuntu-restricted-extras
 lsb-release
 rar
 unrar
