@@ -16,6 +16,7 @@ gnupg
 python3-pip
 gnupg-agent
 software-properties-common
+gnome-system-tools
 lsb-release
 p7zip-full
 p7zip-rar
