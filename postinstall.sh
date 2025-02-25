@@ -169,19 +169,6 @@ function inst_argo() {
     fi
 }
 
-# Func aditonal APPS
-#function inst_ohmyzsh() {
-#  app="OhMyZSH"
-#  echo -e $blue"${titulo//\$app/$app}"$clr
-#  if [ ! -d "$mjc/.oh-my-zsh" ]; then
-#    echo -e $red"${noexiste//\$app/$app}"$clr
-#    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-#    echo -e $green"${instalado//\$app/$app}"$clr
-#  else
-#    echo -e $green"${existe//\$app/$app}"$clr
-#  fi
-#}
-
 function inst_lens() {
   app="Lens Desktop"
   version=$(lens-desktop --version | awk '{print $2}')
@@ -345,7 +332,6 @@ function test_func() {
 }
 
 # Menu Opciones
-
 menu_ubuntu() {
 echo -ne "
 Menu Gnome
