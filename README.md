@@ -1,5 +1,8 @@
 # ubuntu-post-install
 
+> [!CAUTION]
+> Este repo esta siendo modificado para el uso de debian XFCE.
+
 ## Descripcion
 Estos son archivos de uso personal, podes copiartelos, descargarlo y mejorarlo a tu gusto. 
 Esto esta hecho para facilitar la tarea de instalar y configurar aplicaciones y archivos luego de una reinstalacion o una nueva instalacion.
