@@ -4,10 +4,10 @@
 > Este repo esta siendo modificado para el uso de debian XFCE.
 
 ## Descripcion
-Estos son archivos de uso personal, podes copiartelos, descargarlo y mejorarlo a tu gusto. 
+Estos son archivos de uso personal, puedes copiartelos, descargarlo y mejorarlo a tu gusto. 
 Esto esta hecho para facilitar la tarea de instalar y configurar aplicaciones y archivos luego de una reinstalacion o una nueva instalacion.
-Puede que no sea lo mas optimo y prolijo pero me es util y capaz te puede servir.
-Se ira mejorando poco a poco
+Puede que no sea lo mas optimo y/o prolijo pero me es util y posiblemente te pueda servir.
+Se ira mejorando poco a poco...
 
 Si llegaste a este repo, te invito a que lo uses y lo modifique a tu gusto, no hace falta que lo diga, pero si queres hacer comentarios y subir modificaciones bienvenido sea
 
