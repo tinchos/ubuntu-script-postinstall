@@ -13,7 +13,7 @@ Si llegaste a este repo, te invito a que lo uses y lo modifique a tu gusto, no h
 
 ## Aplicaciones
 
-El script tiene segmentado por tipo de entorno (Gnome & KDE):
+El script tiene segmentado por tipo de entorno (Gnome, KDE, XFCE):
 ##### Para GNOME:
 - g-programs_core.src
 - g-programs.src
@@ -22,10 +22,9 @@ El script tiene segmentado por tipo de entorno (Gnome & KDE):
 - k-programs_core.src
 - k-programs.src
 
-##### Para SNAP:
-
-para el que necesite instalar aplicaciones usando la paqueteria snap, como spotify, vscode tambien esta disponible
-- snap.src
+##### Para XFCE:
+- x-programs_core.src
+- x-programs.src
 
 ##### Server:
 Para los que quieran usar el script para un ubuntu server, hay un listado de paqueteria unico para instalar, como tambien un menu dedicado a esta opcion.
