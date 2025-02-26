@@ -24,3 +24,4 @@ dbus-user-session
 uidmap
 autoconf
 cmake
+libnss3-tools
