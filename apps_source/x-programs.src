@@ -8,6 +8,7 @@ jq
 htop
 tree
 fonts-powerline
+fonts-freefont-otf
 neofetch
 kubecolor
 net-tools
@@ -16,3 +17,6 @@ vlc
 dnsutils
 mono-devel
 libfuse2
+yaru-theme-gtk
+yaru-theme-icon
+yaru-theme-sound
