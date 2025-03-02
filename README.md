@@ -1,7 +1,7 @@
 # ubuntu-post-install
 
 > [!CAUTION]
-> Este repo esta siendo modificado para el uso de debian XFCE.
+> Este repo esta siendo modificado para el uso de debian XFCE o XUBUNTU.
 
 ## Descripcion
 Estos son archivos de uso personal, puedes copiartelos, descargarlo y mejorarlo a tu gusto. 

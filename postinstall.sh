@@ -235,6 +235,7 @@ function inst_ghcli() {
   fi
 }
 
+# solo para usar en DEBIAN
 function inst_eza() {
   app="eza"
   version=$(eza -v)
@@ -247,6 +248,18 @@ function inst_eza() {
     echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | tee /etc/apt/sources.list.d/gierens.list
     chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
     apt update && apt install eza -y
+  fi
+}
+
+function inst_brave() {
+  app="brave-browser"
+  version=$(brave-browse --version)
+  echo -e $blue"${titulo//\$app/$app}"$clr
+  if command -v $app &> /dev/null; then
+    echo -e $green"${existe//\$app/$app $version}"$clr
+  else
+    echo -e $red"${noexiste//\$app/$app}"$clr
+    curl -fsS https://dl.brave.com/install.sh | sh
   fi
 }
 
